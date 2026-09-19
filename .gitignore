@@ -1,0 +1,13 @@
+# ROS2 generated folders
+build/
+install/
+log/
+
+# VS Code
+.vscode/
+**/.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.db
