@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="mazenav_world">
+    
+    <!-- Sun & Physics -->
+    <include><uri>model://sun</uri></include>
+    <include><uri>model://ground_plane</uri></include>
+
+    <!-- 1. MAZE ARENA FLOOR (2.4m x 1.2m White Base) -->
+    <model name="maze_floor">
+      <static>true</static>
+      <pose>1.2 0.6 0.001 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>2.4 1.2 0.001</size></box></geometry>
+          <material>
+            <ambient>0.95 0.95 0.95 1</ambient>
+            <diffuse>0.95 0.95 0.95 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 2. BLACK TAPE OUTER BORDERS (1.5cm = 0.015m Thickness) -->
+    <model name="tape_top">
+      <static>true</static>
+      <pose>1.2 1.1925 0.002 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>2.4 0.015 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material>
+      </visual></link>
+    </model>
+
+    <model name="tape_bottom">
+      <static>true</static>
+      <pose>1.2 0.0075 0.002 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>2.4 0.015 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material>
+      </visual></link>
+    </model>
+
+    <model name="tape_left">
+      <static>true</static>
+      <pose>0.0075 0.6 0.002 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>0.015 1.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material>
+      </visual></link>
+    </model>
+
+    <model name="tape_right">
+      <static>true</static>
+      <pose>2.3925 0.6 0.002 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>0.015 1.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material>
+      </visual></link>
+    </model>
+
+    <!-- 3. FOUR ORANGE CORNER MARKERS FOR OPENCV PERSPECTIVE WARPING (10cm x 10cm) -->
+    <!-- Top-Left Corner (0.05, 1.15) -->
+    <model name="warp_marker_tl">
+      <static>true</static>
+      <pose>0.05 1.15 0.003 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>0.10 0.10 0.001</size></box></geometry>
+        <material><ambient>1.0 0.4 0.0 1</ambient><diffuse>1.0 0.4 0.0 1</diffuse></material>
+      </visual></link>
+    </model>
+
+    <!-- Top-Right Corner (2.35, 1.15) -->
+    <model name="warp_marker_tr">
+      <static>true</static>
+      <pose>2.35 1.15 0.003 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>0.10 0.10 0.001</size></box></geometry>
+        <material><ambient>1.0 0.4 0.0 1</ambient><diffuse>1.0 0.4 0.0 1</diffuse></material>
+      </visual></link>
+    </model>
+
+    <!-- Bottom-Left Corner (0.05, 0.05) -->
+    <model name="warp_marker_bl">
+      <static>true</static>
+      <pose>0.05 0.05 0.003 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>0.10 0.10 0.001</size></box></geometry>
+        <material><ambient>1.0 0.4 0.0 1</ambient><diffuse>1.0 0.4 0.0 1</diffuse></material>
+      </visual></link>
+    </model>
+
+    <!-- Bottom-Right Corner (2.35, 0.05) -->
+    <model name="warp_marker_br">
+      <static>true</static>
+      <pose>2.35 0.05 0.003 0 0 0</pose>
+      <link name="link"><visual name="visual">
+        <geometry><box><size>0.10 0.10 0.001</size></box></geometry>
+        <material><ambient>1.0 0.4 0.0 1</ambient><diffuse>1.0 0.4 0.0 1</diffuse></material>
+      </visual></link>
+    </model>
+
+    <!-- 4. OVERHEAD IMX335 CAMERA MODEL -->
+    <model name="imx335_overhead_cam">
+      <static>true</static>
+      <pose>1.20 0.60 2.00 0 1.5707963 0</pose>
+      <link name="link">
+        <sensor type="camera" name="imx335_sensor">
+          <update_rate>30.0</update_rate>
+          <camera name="imx335">
+            <horizontal_fov>0.97507</horizontal_fov>
+            <image>
+              <width>1280</width>
+              <height>720</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip><near>0.1</near><far>10.0</far></clip>
+            <distortion>
+              <k1>-0.47888966</k1>
+              <k2>0.31616510</k2>
+              <k3>-0.12210834</k3>
+              <p1>0.00424173</p1>
+              <p2>0.00878952</p2>
+              <center>0.445578 0.500241</center>
+            </distortion>
+          </camera>
+          
+          <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+            <ros>
+              <namespace>/overhead</namespace>
+              <remapping>image_raw:=imx335/image_raw</remapping>
+            </ros>
+            <camera_name>imx335</camera_name>
+            <frame_name>overhead_cam_link</frame_name>
+          </plugin>
+        </sensor>
+      </link>
+    </model>
+
+    <!-- Auto-set GUI View -->
+    <gui fullname="default">
+      <camera name="user_camera">
+        <pose>1.2 0.6 2.5 0 1.5708 0</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
+
+  </world>
+</sdf>
