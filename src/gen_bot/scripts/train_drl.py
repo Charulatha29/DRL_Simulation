@@ -22,7 +22,7 @@ class OUActionNoise:
         self.x_prev = np.zeros_like(self.mean)
 
 def get_actor():
-    inputs = layers.Input(shape=(6,))
+    inputs = layers.Input(shape=(8,))
     out = layers.Dense(256, activation="relu")(inputs)
     out = layers.Dense(256, activation="relu")(out)
     outputs = layers.Dense(2, activation="tanh")(out)
@@ -34,7 +34,7 @@ def train():
     ou_noise = OUActionNoise(mean=np.zeros(2), std_deviation=float(0.2) * np.ones(2))
     
     episodes = 200
-    print("Starting DRL Training inside Gazebo...")
+    print("Starting Domain-Randomized DRL Training inside Gazebo...")
     
     for ep in range(episodes):
         state, _ = env.reset()
